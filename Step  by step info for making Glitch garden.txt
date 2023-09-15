@@ -1,0 +1,301 @@
+> In this gme first we make a project and in the hierarchy make a UI canvas and as its child, we add image from the UI section. Then we import the image from glitch garden website and download set the image of glitch homepage as the splash screen in the image source section. Also make a text box and write garden in it with funkyJunk text type downloaded from dafont.com. When you set the image, select preserve aspect and click set native size.
+
+> Now make a new game object and name it Load Sound and in it add a component of audio source and reset its transform. In the audio clip drag select the audio downloaded. Then make a new gameObject and name it Level loader and prefab it in a folder named prefabs.
+
+> Make a new script and naeme it LevelLoad. In this script, make an int and name it currentSceneIndex. In the start method, equal this variable to: currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+Use an if condition that if the value of currentSceneIndex is 0 then StartCoroutine(WaitForTime());
+
+> Make a method of type IEnumerator of WaitForTime and in it write yield return new WaitForSeconds(timeToWait); where timeToWait is a Serialized field of type int and its value is 4. After that call the LoadNextScene method. In this method write SceneManager.LoadScene(currentSceneIndex + 1);
+
+> Now click on the canvas and set the reference resolution to 1920 x 1080 and UI scale mode to scale with screen size and screen match mode to shrink do the same with the new scene that we will create by duplicating this one and change the image source only.
+
+> Now create a new scene by copying the earlier one and name it level 1 and in it, first import the background art provided and in the image part use it as a source image. Switch off the start and quit text and safezone. Now set the scale of the canvas to 0.00625 on x and y and set the transform to 0,0,0.
+
+> Now make a new game object and name it lizard and in it add a new component called sprite renderer and in the sprite section drag select the 7th photo of the lizard from the lizard spritesheet. For that we need to change the asset to multiple in the spritesheet after clicking on it and then press appply. Then open sprite editor, go to slice option and select automatic.
+
+> Now go to the window menu, in animation and add the animator in the scene. Make a new folder and name it animations and in it add select create and click on animation and name it Lizard. Now select all the sprites and of lizard walking then right click on it and then create->animation. This will make a triangular animation object, move it to animation folder. Click loop time in it. At the bottom of this in inspector, pull up the line of lizard walking and it will show an empty box. In that, drag the Lizard game object that we made. In the parameters section of the animator, make one parameter and name it isWalking.
+
+> Create a new state if one is not already present and in it select the motion of Lizard Walking animation and the speed is 1. Also select on the Lizard game object and in it in the animator, set the controller to Lizard.
+
+> Now we have to slice another spritesheet, but in this cas we have to use Grid by cell size. Now in the spritesheet, at the bottom, the length and breadth of the sprite sheet is given. Count the number of individual sprites in the x axis and in the y axis and divide the first one with length and the second one by breadth. Here the size is 753 x 1674 so 753/3 and 1674/9.
+
+> Now select the sprites and create the animation and name it as Lizard jump. IN the animator, delete the lizard walking one and first drag the lizard jump animation and then drag lizard walking animation. Right click on the lizard jump animation and select make transition and join it to lizard walking.
+
+> The problem is after completeing the jump animation the walk aninmation starts a bit above the jump animation. This is because we used the autiomatic function to slice that spritesheet whereas it is different in the jump sheet. So follow the same method for slicing the walk spritesheet again and slice it using grid by cell size. The animator will make the changes accordingly.
+
+> Now we take the trophy sprite and in it change the number of sprites to multiple, set to auto and slice it. Now we have 2 sprites, one is for the top the trophy and the second is for the bottom of the trophy. Make both these sprites as the children of the trophy game object that we have to create. Now select both of the sprites and create new animator controller. In the animation, select the top, click the red button in the animation section that starts recording and move the top up at 0, back down at 6, up at 12 till 24s. Set the play speed to 0.3x approx.
+
+> Also add property after selecting the trophy animation and in the property, select base, transform, rotation and in each frame at same time as the bounce of top, rotate the base by a certain amount and in the next frame bring it back.
+
+> Now create a new c# script to the lizard component and name it Attacker and in the update method write:
+transform.Translate(Vector2.left * Time.deltaTime);
+This will make the lizard move to the left and Time.deltaTime will make the game frame independent. Translate to the left. Vector2.left where left is an inbuilt function which helps us make it work easily.
+
+> Now make a serialized field of type float and name it walkSpeed = 1f. Also write [Range(0f,1.5f)] which will create a slider for the speed. Here for the lizard the speed of 0.78-0.8 is ok as per the animation speed.
+
+> Now in the start method, instead of void write IEnumerator and in this method make a while loop which checks the bool spawn which is initially set to true. In the loop write yield return new WaitForSeconds() and in this bracket, give a Random.Range from minSpawnDelay to maxSpawnDelay which are both serialized fields of type float and set to 1f and 5f. After yield return call a method named SpawnAttacker.
+
+> Create the method SpawnAttacker and in it Instantiate(attackerPrefab, transform.position, transform.rotation) where attackerPrefab is a variable of type Attacker and is a serialized field. This will instantiate the prefab at transform position with transform rotation.
+
+> Create a new gameObject named spawner and add the AttackerSpawner script to it. Prefab it and set 5 copies of this spawner in the scene. Now in the attacker script remove walkSpeed and make a float named currentSpeed and set its value to 1f and in the update method write:
+transform.Translate(Vector2.left * currentSpeed * Time.deltaTime);
+This means that the object will move in the left direction with the currentSpeed and make it frame independent with the last attribute.
+
+> Now create a new method named SetMovementSpeed which takes a float named speed and in the method it will squate currentSpeed = speed. Double click on the animation of lizard walking and it will show all the frames in the animation window. In it add an event at time = 0 and in the inspector write there will be a box named function. In the box set the name to SetMovementSpeed and in the float set the value to 1.45. Do the same for lizard jump animation and set the value of float to 0.
+
+> Now select the cactus idle and cactus looping spritesheets from the not in use folder and slice them. Select all the sprites from the cactus idle sheet and create animation and name it as Cactus Idle. Do the same as Cactus looping sheet and make its animation and name it Cactus Attacking. Make an animator controller and name it Cactus and in it add both the animations of Cactus. Make a transition from idle to attack and set the settings of exit time to 1 and transition duration to 0.
+
+> Now create an empty game object and name it Cactus and reset its transform. Add a sprite renderer and in the sprite section set the first sprite from the cactus idle sheet and set the order in layer to 5. Add animator controller component and in its runtime environment set the Cactus animator controller.Also prefab this game object. Now select the cactus game object and select the cactus attacking animation and in the frame where the cactus' expression changes at around 24s, change the color of the cactus to bright green or any other color and set it to normal after 2-3 frames.
+
+> Now create a new script and name it Shooter and add this script to the cactus prefab. In the script, remove the start and update method and instead write a Fire() which just has return for now. Then select Cactus game object, go to its animation window and in the cactus attack where you set the color change, create an event and in it set the Fire() method.
+
+> Create 2 serialized field of types GameObject and name first projectile and second gun where gun is a child of the Cactus gameObject. Now instead of return, write Instantiate(projectile, gun.transform.position, transform.rotation). In the Cactus game object select the thorn sprite which we imported as the projectile field and Gun game object as the Gun field.
+
+> Now create a new script and name it Projectile. Add this script to the thorn prefab. In the script make a serialized field named projectileSpeed and set its value to 4f. In the update method write:
+transfrom.Translate(Vector2.right * projectileSpeed * Time.deltaTime)
+
+> Now add rigid body2d and box colliders to both the thorn and the lizard prefabs and set their size. Set both as triggers. Create a new script and name it Health. In it make a serialized field of type float and name it attackerHealth and set its value to 100f. Also create a new method and name it DealDamage(float damage). In it decrease the attackerHealth by damage [attackerHealth -= damage] and if the attackerHealth <= 0 then Destroy(gameObject). Include this script as a comnponent in the Lizard prefab.
+
+> In the Projectile script, make a serialized field of type float and name it damage and set its value to 50f. Create a OnTriggerEnter2D method and in it make a variable:
+var health = otherCollider.GetComponent<Health>();
+health.DealDamage(damage);
+This means that if the thorn touches the lizard 2 times then the lizard will get destroyed.
+
+> Now import the package for explosion and in Health script in the if statement, call triggerDeathVFX method before destroying gameObject. In this method, if(!deathVFX){return;} no death vfx then return and outside the if statement instantiate(deathVFX, transform.position, transform.rotation). Here deathVFX is a serialized field of type GameObject.
+
+> Now create a new GameObject and name it Core Game Area and add a new script to it named DefenderSpawner. In the script make a serialized field of type g.o. and name it defender. Make a void method of OnMouseDown() and in it call the method SpawnDefender. In the method SpawnDefender write:
+GameObject newDefender = Instantiate(defender, transform.position, Quaternion.identity) as GameObject;
+Set the z component of transform of to 0.5 so tht it is nearer to the camera than the canvas.
+
+> Now we have to create a method of type Vector2 and name it GetSquareClicked(). In this method make a vector2 variable and name it clickPos which will give us the  position of the mouse click. Equal clickPos to new Vector2(Input.mousePosition.x, Input.mousePosition.y); This will store the position of mouse click in the clickPos. Now make another vector2 variable and name it worldPos and equal it to Camera.main.ScreenToWorldPoint(clickPos); and then return worldPos. The SpawnDefender method will take the vector2 worldPos as an argument and the function SpawnDefender in the OnMouseDown function will call the GetSquareClicked() in it.-->SpawnDefender(GetSquareClicked());
+
+> When we equal worldPos to ScreenToWorldPoint, it will detect where we clicked the mouse pointer in the worldspace and spawn the cactus there.
+
+> Now create a new vector2 method named SnapToGrid which takes a vector2 named roundedPos as an argument. In this method make 2 floats named newX and newY and equate them to Mathf.RoundToInt(roundedPos.x or .y). This method will return new Vector2(newX, newY).
+
+> In the GetSquareClicked make a new vector2 named gridPos and equal it to SnapToGrid(worldPos). This method will now return gridPos instead of worldPos.
+
+> Now create a new game object in the hierarchy and name it Buttons. Right click on it and go to 3D and add Quad to it and name it Background, set its position as per the camera. Make a new folder and name it as material and in it right click and create a new material and change the color of the material to greenish blue and make it transparent and insert it in the material section of the Background. Now from the spritesheet, select a sprite of cactus idle and drag it as a child of the background. Do the same for a trophy sprite. Go to the renderer of the cactus and set the color to 292929 and the same to the cactus.
+
+> Now add a collider to both the cactus and the trophy and then create a new script called DefenderButton. In it create a OnMouseDown method in which create a variable var buttons = FindObjectsOfType<DefenderButton>(); Then start a foreach loop:
+foreach(DefenderButton button in buttons)
+{
+  button.GetComponent<SpriteRenderer>().color = new Color32(41,41,41,255);
+}
+GetComponent<SpriteRenderer>().color = Color.white;
+This means the color will change to white of the button we click on.
+
+> Now create a new script named Defender and remove the start and update method and make a serialized field of type int named starCost = 100. Put this script in the cactus and trophy in the hierarchy. In the DefenderButton script, make a serialized field of type Defender and name it defenderPrefab and in the button cactus and trophy whole in the hierarchyput the Cactus gameObject in cactus button and same for trophy. Now in the DefenderSpawner script, instead of the field GameObject, make it Defender and change it in the SpawnDefender method too.
+
+> Now in the DefenderSpawner script create a public void method named SetSelectedDefender(Defender defenderToSelect) and in this method equal the defender to defenderToSelect. Now in the DefenderButton script, in the OnMouseDown method after GeComponent write:
+FindObjectOfType<DefenderSpawner>().SetSelectedDefender(defenderPrefab);
+This will now take the defender that is selected from the DefenderSpawner script and when we click on the screen it will spawn on the defender that is selected.
+
+> Now add a TMP component as a child of the canvas in the background of the buttons at the bottom to show the number of stars of the player. Also create a new script and name it StarDisplay and add it to this text component. Download a new font of name Garden from dafont.com and set it as the font for this text box.
+
+> Now add 2 namespaces in the script we created, one of TMPro and UnityEngine.UI. now make a serialized field of type int and name it stars and set its value to 100. Also make a variable named starText of type TMP_Text. In the start method, get component of TMP_Text and the call the UpdateDisplay method. Create thid update display method and in it equal, starText.text = stars.ToString();
+
+> Now create a public method named AddStars which takes an integer named amount as a parameter. In this method make stars+=amount and then call the UpdateDisplay method. Copy this method and name it as SpendStars and instead of += write -= and put the whole condition in an if statement that checks if(stars>=amount).
+
+> Now in the Defender script make the same public AddStars method with parameter amount and in it write FindObjectOfType<StarDisplay>().AddStars(amount). Then in the trophy animation make an event and select AddStars and set the value to 2 which means that the original amount will be added by 2 stars every time the animation reaches that part. You can also add the animation of a star coming out of the trophy and growing a bit big and then disappear.
+
+> Now in the StarDisplay script, make a public bool and name it haveEnoughStars(int amount) which only returns stars >= amount i.e true if this condition is true.
+
+> In the DefenderSpawner script make a private void named AttemptToPlaceDefenderAt method which takes a Vector2 gridPos as its parameter. In it make a var named StarDisplay and equal it to FindObjectOfType<StarDisplay>();
+Also make a new int named defenderCost and equal it to defender.GetStarCost() which accesses the star cost from the defender script.
+
+> Now make an if statement that accesses the HaveEnoughStars mathod from the StarDisplay script:
+if(StarDisplay.HaveEnoughStars(defenderCost))
+{
+     SpawnDefender(gridPos);
+     StarDisplay.SpendStars(defenderCost);
+}
+which means that if the amount of stars are >= defenderCost the spawn the defender at the selected position and also access the SpendStar method from the StarDisplay script. The defender cost is set as 100. Also in the OnMouseDown method of DefenderSpawner script instead of SetSelectedDefender write: AttemptToPlaceDefenderAtt(GetSquareClicked());
+
+> Now in the AttackerSpawner script, in the SpawnAttacker method, we will assign the whole instantiate function as a variable i.e. make a variable of type Attacker and name it newAttacker and equal it to the whole Instantiate and at the end write as Attacker. Then in the next line in the same method equate newAttacker.transform.parent = transform.
+
+> Now go to shooter script and add the start and update methods to it. In the start method call another method named SetLaneSpawner(). Create this method after update method and create an array of type AttackerSpawner and name it spawners and write as follows:
+AttackerSpawner[] spawners = FindObjectsOfType<AttackerSpawner>();
+Then create a foreach loop:
+foreach(AttackerSpawner spawner in spawners)
+{
+     bool IsCloseEnough = 
+         (Mathf.Abs(spawner.transform.position.y - 				transform.position.y) 
+                <= Mathf.Epsilon);
+
+     if(IsCloseEnough)
+     {
+         myLaneSpawner = spawner;
+     }
+}
+This means we created a bool named IsCloseEnough which checks if the y position of the attacker is closest to the defender then the defender should set myLaneSpawner as spawner.
+
+> In the update method we will check an if condition that if the bool IsAttackerInLane is true, then print shoot or print wait. Now create this bool and in it check if(myLaneSpawner.transform.childCount <= 0) then return false else return true which means that if there are any attackers in the lane of the defender then return true else false.
+
+> Now in the animator in the unity, make another animation named cactus Idle and then set it to the first animation after entry and Cactus Idle makes transition to Cactus Attack. Make 2 way transitions from Idle to Attack and from Attack to idle. Now click on parameters in the animator and create a bool and name it as IsAttacking and in the transition from Idle to Attack, Click on the + of conditions and set the IsAttacking as true and in the same way set it as false in the other transition from Attack to Idle.
+
+> Now in the Shooter script make a new variable of type Animator and name it as animator. In the start method write:
+animator = GetComponent<Animator>();
+Also in the Update method instead of the print of shoot write animator.SetBool("IsAttacking", true) and copy the same and paste it in the else statement and instead of true, set it false.
+
+> Now create an empty game object and name it as Axe and as its child make another empty object and name it Body. In the Body, add the sprite renderer and set the order in layer to 6 and the sprite as Axe.
+
+> Now click on the Axe and add the projectile script and Animator. Now right click on the body and on the animaton window and create clip and name it Axe Throw. Add property of rotation in transform and set it from 0:00 to 0:30. Then click on record and slide to the end point and change the z value of rotation to -359 and switch off record. Now go to the curves section below add property and shift+scroll down till both the ends of the curves are visible and click on record, click on the bottom point of the curve and align the grey line to the top point of the curve and do the same to the top point of the curve and align it with the bottom point of the curve and switch off the record. Also set the projectile speed from the projectile script to 2 instead of 5.
+
+> Now to create the defender gnome, make an empty game object, name it gnome, as its child make body and gun, add the same components as Cactus to the body and Gnome respectively and add the aimations of gnome idle and when an attacker spawns in its line change to Gnome Hop animation, for that do the same as the animation transitions as the cactus transitions. Ctrl+D the button of Cactus and change the sprite to the sprite of the gnome. In the defender button script, change the defender prefab to gnome sprite.
+
+> Now do the same as Gnome for the gravestone and add atleast 3 keyframes in its animations. Star cost for trophy and gravestone is 100, for cactus its 50 and for gnome its 150.
+
+>  Now make an animation of Lizard Attacking and set the condition of isAttacking. So when the tick box is clicked the animation will switch from lizard walk to lizard attack and vice versa.
+
+> Now in the Attacker script, make a variable of type GameObject and name it currentTarget. Also make a new public void Attack which takes a parameter of type GameObject of name target. In this method first GetComponent<Animator>().SetBool("isAttacking", true) and the make currentTarget = target.
+
+> Now create a new script named Lizard and add it as a component to the lizard prefab. In the script, remove the start and update method and create a OnTriggerEnter2D(Collider2D otherCollider) method. Here create a variable of type gameObject and name it otherObject and equal it to otherCollider.gameObject which means that 'otherCollider' is the gameObject whose collider has collided. Create an if statement and in its condition write:
+if(otherObject.GetComponent<Defender>())
+{
+    GetComponent<Attacker>().Attack(otherObject);
+}
+This means that if otherObject gets component and if the component or gameObject has Defender comnponent in it then, it will call the Attack method from the Attacker script and pass the otherObject as the target parameter.
+
+> Now in the Attacker script make a new public void method named StrikeCurrentTarget which takes a float named damage as its parameter. In it if !currentTarget condition is satisfied then return. In the next line make a variable of type Health script and name it health and equate it to currenttarget.GetComponent<Health>(); i.e. access the health component of the currenttarget. now if(health) means if the currentTarget has the health component/script then call the DealDamage method of Health script and pass damage as the parameter.
+
+> In the Update method, call a new method named UpdateAnimationState. Below Update method, create this new method that we just called and in it if(!currentTarget) means if ghe currentTarget has been destroyed then:
+GetComponent<Animator>().SetBool("isAttacking", false);
+means change the animation to walking instead of attacking.
+
+> Now make an empty game object and name it Fox and add another empty object named Body. Add the same components as Lizard except the lizard script to the Fox and Body respectively. Also create animations of Fox Jump, Run and Eating/Attacking. In the animations of Fox there will be 2-way transitions between Fox Run and Jump, and, Fox Run and Attack. Make 2 parameters, one is a trigger and name it JumpTrigger and the other as bool and name it isAttacking.
+
+> Now add 2 tags namely Defender and Gravesstone. In the Gravestone prefab, set the tag as Gravestone and all the rest of the defenders as Defender.
+
+> Now create a new script named Fox and copy the contents of the Lizard script to Fox script. Change the if statement to:
+if(otherCollider.tag == "Gravestone")
+{
+    GetComponent<Animator>().SetTrigger("JumpTrigger");
+}
+else if(otherCollider.tag == "Defender")
+{
+    GetComponent<Attacker>().Attack(otherObject);
+}
+
+the if statement checks if the tag is Gravestone then set the JumpTrigger off (like a one tap button to jump everytime) and if the tag is Defender then the animation is changed to Fox Eating/Attacking.
+
+> Now add an event at the start of Fox Run and set the function to SetMovementSpeed and set its value to 2. Do the same for Fox Jump and Fox attack but in Fox Attack set its value to 0. Add another event at 5th or 6th frame and set the function to StrikeCurrentTarget and set its value to 30. Keep Has Exit Time in the animation transition from Fox Jump to Run only because the Fox Jump animation is the only one that has to be completed.
+
+> Now in the AttackerSpawner script, make the variable attackerPrefab of type array and rename it attackerPrefabArray. Create a new method named SpawnNext which takes an argument myAttacker of type Attacker and in it copy the contents of SpawnAttacker method. In the SpawnAttacker method create a var named attackerIndex and equate it to Random.Range(0, attackerPrefabArray.Length); In the next line call the SpawnNext method and pass the attackerPrefabArray in it with attackerIndex in []:
+SpawnNext(attackerPrefabArray[attackerIndex]);
+
+> Now create an empty game obect and name it Home Base and add a 2D collider to it and place it on the left most side of the game area and set it as a trigger. Add a new text area to the canvas after Star Text and name it Base Health Text. Now create a new script and name it LifeDisplay.
+
+    [SerializeField] int lives = 10;
+    [SerializeField] int damage = 1;
+    TMP_Text livesText;
+    void Start()
+    {
+        livesText = GetComponent<TMP_Text>();
+        UpdatePoints();
+    }
+
+    private void UpdatePoints()
+    {
+        livesText.text = lives.ToString();
+    }
+
+    public void TakeLives()
+    {
+        lives -= damage;
+        UpdatePoints();
+        if(lives<=0)
+        {
+            FindObjectOfType<LevelLoad>().LoadGameOver();
+        }
+    }
+
+The first 2 methods are the same as the StarDisplay method and the TakeLives method only contains the extra if statement.
+
+> In the LevelLoad script add this method and add the LevelLoad script to the CoreGameArea game object:
+
+public void LoadGameOver()
+{
+    SceneManager.LoadScene("Lose Screen");
+}
+
+> Make a new script named DamageCollider and in it add a OnTriggerEnter2D method which finds object of type LifeDisplay and accesses its method TakeLives(). Add this script to the Home Base Collider game object.
+
+> Also now make a copy of the start screen and change the image and the Load Sound and give the name as Lose Screen to the Scene and insert it in the build settings.
+
+> Now go to UI and add a component of slider to Canvas prefab and in it set the background to dark green or blue, fill to greenish yellow, and in the Handle, set the image of Fox Running number 25, change its color to greenish. Now add an animator component to the Handle and then create a new animation of Fox handle slider and add its controller to the animator component.
+
+> Now create a new script named GameTimer and add it to the Slider. In the script, make a serialized field of type float and name it levelTime and set its value to 10. In the update method get the component of Slider and write:
+
+GetComponent<Slider>().value = Time.timeSinceLevelLoad / levelTime;
+bool timerFinished = (Time.timeSinceLevelLoad >= levelTime);
+if(timerFinished)
+{
+    Debug.Log("Level timer ended");
+}
+
+This means we will divide the time since the scene loaded by the value of level time. Then we will make a bool named timerFinished and check if the time after level loaded is >= the value of levelTime we set. If this bool is true then print a message.
+
+> Now create an empty gameObject and name it Level Controller, create a script of same name and add it to this. In the script, make an int named numberOfAttackers and set it to 0. Create a bool named levelTimerFinished and set it to false. Make a public void method named AttackerSpawn and in it increase the value of numberOfAttackers by 1. Similarly create another public void named AttackerKilled and in it decrease the value of the same. In the same method, if the numberOfAttackers <=0 and levelTimerFinished == true then print End level. Create a new method named LevelTimerFinished in which set the value of the bool to true.
+
+> Now in the Attacker script, write 2 methods, Awake and OnDestroy. In Awake, FindObjectOfType<LevelController>().AttackerSpawn() and in OnDestroy method FindObjectOfType<LevelController>().AttackerKilled(). Then go to AttackerSpawner script and create a public void method named StopSpawning and in it set the value of the bool spawn = false.
+
+> Then go to GameTimer script and in it create a bool named triggeredLevelFinished = false. Then in the if statement, instead of printing, FindObjectOfType<LevelController>().LevelTimerFinished(); and set the bool we just created to true.
+
+> Finally in the LevelController in the LevelTimerFinished method, call StopSpawners method. Create this method as a private void. In this method, make an array of type AttackerSpawner[] and name it spawnerArray and equate it to FindObjectsOfType<AttackerSpawner>(); Then start a foreach loop:
+
+foreach (AttackerSpawner spawner in spawnerArray)
+{
+    spawner.StopSpawning();
+}
+
+This means that every spawner that we placed in the game screen will call the StopSpawning method from the AttackerSpawner script.
+
+> Now create a new canvas and name it Level Complete Canvas. In it set the render mode to World space and then copy the component of Main Canvas rect transform and then paste component values on the same of the new canvas. Then add a text mesh pro and center it on the scene and also go to UI again and add an image, both as children of the new canvas. Also set appropriate font size and colors.
+
+> Now go to LevelController script and create 2 serialized field and name one as waitToLoad which is a float and other of type GameObject and name it winLabel. Make the start method and in it winLabel.SetActive(false); Now go to AttackerKilled method and instead of the print statement write StartCoroutine(HandleWinCondition());
+
+> Make this Coroutine by writing IEnumerator HandleWinCondition. In this method, set the winLabel bool to active, GetComponent<AudioSource>().Play(), yield return new WaitForSeconds(waitToLoad) and FindObjectOfType<LevelLoad>().LoadNextScene(); We have added the component of AudioSource to the LevelController game object and give the appropriate audio clip which will be played by the get component line. Also drag the Level Complete canvas in the Level Controller script serialized field.
+
+> Now create a Level Lost Canvas as a copy of the level complete canvas. In the level lost canvas, add a box collider and set its size the same as that of the main canvas. Create a HandleLoseCondition in the LifeDisplay script as a coroutine and start it when lives=0.
+
+> Now create a options screen by copying the start screen and changing the background, adding 2 buttons for Back button and Defaults buttons, also adding 2 sliders to manage the volume and difficulty level.
+
+> Now create a new script named PlayerPrefsController. In this script make a const string named MASTER_VOLUME_KEY and equate it to "master volume", do the same for DIFFICULTY_KEY and name equate it to "difficulty". We have kept the name in capital letters to know that it is a constant and its value is not be changed. Similarly mae 2 const float and give names max and min volume with values 1f and 0f.
+
+> Now create a public static void method named SetMasterVolume which takes a float parameter named volume. In a condition, if(volume >= MIN_VOLUME && volume <= MAX_VOLUME) then PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, volume); which means set the value of Master volume key to volume. Also create a public static float GetMasterVolume which returns PlayerPrefs.GetFloat(MASTER_VOLUME_KEY);
+
+> Now create an empty game object named Music Player in the Splash Screen scene and in that add ascript of the same name. Also add Audio Source component to it. In thhe script, make a variable of type AudioSource and name it audioSource. In the start method, write:
+DontDestroyOnLoad(this);
+audioSource = GetComponent<AudioSource>();
+audioSource.volume = PlayerPrefsController.GetMasterVolume();
+
+This means that this game object is not to be destroyed when another scene is loaded. Also get the component of the audio source. The last line indicates that the volume of audio is set as the volume of the MasterVolume. Also create a new method named SetVolume which takes a float named volume as its parameter and in it equate audioSource.volume and volume.
+
+> Now make a game object named Options Controller and create and add a script of same name to it. In this script, create 2 serialized fields, one of type Slider and name it volumeSlider and other a float and name it defaultVolume with its value as 0.6f. In the start method equate volumeSlider.value to PlayerPrefsController.GetMasterVolume(); In the update method, create a variable named musicPlayer and find object of type MusicPlayer. Now make an if condition that if(musicPlayer0 i.e. if its available then musicPlayer.SetVolume(volumeSlider.value) else Debug.LogWarning.
+
+> Now create a public method named SaveAndExit and in it write:
+PlayerPrefsController.SetMasterVolume(volumeSlider.value);
+FindObjectOfType<LevelLoad>().LoadMainMenu();
+
+which means set the value of master volume to the value of volumeSlider.value and then LoadMainMenu. Create another method named SetDefault and volumeSlider.value = defaultVolume; These functions are to be called in the OnClick section of the button component and select the appropriate prefabs or game objects and access the functions in their respective scripts.
+
+> Now go OptionsController script and copy the serialized fields of volume slider and change them for difficulty slider. In the start method copy and paste the volumeSlider line for difficultySlider and do the same in SaveAndExit method and SetDefault method. In the PlayerPrefsController script copy the 2 methods of GetVolume and SetMasterVolume and change them for difficulty.
+
+> now go to LifeDisplay script and change the lives as a non serialized with no initial value and change the serialized name to baseLives and set its value as 10 or anything. In the start method write:
+lives = baseLives - PlayerPrefsController.GetDifficulty();
+This will change the value of lives as per the value of the difficulty setting. You can do the same for projectile damage, game timer etc.
+
+> Now go to DefenderSpawner script and create a new GameObject variable named defenderParent and also create a const string DEFENDER_PARENT_NAME = "Defenders"; In the start method call CreateDefenderParent(). Create this method, in it equate defenderParent to GameObject.Find(DEFENDER_PARENT_NAME). Make an if statement that if(!defenderParent) i.e. if there is no game object named Defenders in the hierarchy then create a new one by writing in the 'if': defenderParent = new GameObject(DEFENDER_PARENT_NAME). At the end in the SpawnDefender method, write newDefender.transform.parent = defenderParent.transform, do the same for shooter.
+
+> Create:
+GameObject projectileParent;
+const string PROJECTILE_PARENT_NAME = "Projectiles";
+In start method call CreateProjectileParent method, copy the content of CreateDefenderParent method and change it for projectile. Only change is that in the Fire method, equate the instantiate to: GameObject newProjectile = ..... In the next line write: newProjectile.transform.parent = projectileParent.transform;
+This will transfer all the projectiles that get created and all the defenders that we spawn in 2 separate parent game objects to tidy up the hierarchy.
+
+> Now add a canvas component to the Buttons in hierarchy and then select Cactus and add a Text mesh pro in which copy the scale as that of the main canvas. Ctrl + D and create 3 more and give the 3 to trophy, gnome and stone. Now go to the DefenderButton script and call ButtonCostLabel method in the start method. Create this method and in it make a variable of type TMP_Text named costText and equate it to GetComponentInChildren<TMP_Text>(); Now if(!costText) i.e. if costText is not there then show then Debug.LogError(name + " has no cost text"); else:
+costText.text = defenderPrefab.GetStarCost().ToString();
+which means get the star cost of the defenders from the defenderPrefab and convert it to string and give that value to costText.
+
+> Tune the game and create more levels, add more enemies etc.
